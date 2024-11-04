@@ -1,0 +1,31 @@
+<mat-card>
+  <mat-card-content>
+    <h4 class="mb-32">Edit Profile</h4>
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username">
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email">
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>Phone Number</mat-label>
+        <input matInput formControlName="phone" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>New Password</mat-label>
+        <input matInput type="password" formControlName="password">
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>Confirm New Password</mat-label>
+        <input matInput type="password" formControlName="confirmPassword">
+      </mat-form-field>
+      <div class="modal-buttons">
+        <button mat-raised-button type="submit" class="me-8 mb-8" color="primary">Update</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+

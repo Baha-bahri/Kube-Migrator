@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backup Component</title>
+  <!-- Add necessary imports for Angular Material -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+  <!-- Add Angular Material prebuilt themes -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.24/angular-material.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="d-flex align-items-center mb-4">
+      <i class="bi bi-cloud-arrow-up fs-3 me-2 text-primary"></i>
+      <h2 class="mb-0">Create Backups Options</h2>
+    </div>
+    <button mat-raised-button color="primary" (click)="openCreateBackupForAllModal()">
+      <mat-icon>add</mat-icon> Create Backup For All Ressources
+    </button>
+    <button style="margin-top: 30px;  margin-left: 10px" mat-raised-button color="primary" (click)="openCreateBackupModal()">
+      <mat-icon>add</mat-icon> Create Backup For Namespaces
+    </button>
+    <button style="margin-top: 30px; margin-left: 10px" mat-raised-button color="primary" (click)="openCreateBackupForDeployModal()">
+      <mat-icon>add</mat-icon> Create Backup For Deployments
+    </button>    
+    <button style="margin-top: 30px; margin-left: 10px" mat-raised-button color="primary" (click)="openCreateBackupForPvPvcModal()">
+      <mat-icon>add</mat-icon> Create Backup For PV And PVC
+    </button>
+    <!-- Create Backup Modal -->
+    <ng-template #createBackupModal let-dialogRef="dialogRef">
+      <h2 mat-dialog-title style="padding-left: 18%;">Create Backup</h2>
+      <div mat-dialog-content>
+        <!-- Backup Form -->
+        <form [formGroup]="backupForm" (ngSubmit)="createBackups()">
+          <mat-form-field appearance="legacy" class="w-100">
+            <mat-label *ngIf="!loadingBackup">Backup Name</mat-label>
+            <input matInput formControlName="back_name" *ngIf="!loadingBackup" required>
+          </mat-form-field>
+          <mat-form-field appearance="legacy" class="w-100">
+            <mat-label *ngIf="!loadingBackup">Your Context Name</mat-label>
+            <input matInput formControlName="context_name" *ngIf="!loadingBackup" required>
+          </mat-form-field>
+          <mat-form-field appearance="legacy" class="w-100">
+            <mat-label *ngIf="!loadingBackup">Namespace Name</mat-label>
+            <input matInput formControlName="namespace_name" *ngIf="!loadingBackup" required>
+          </mat-form-field>
+          <mat-form-field appearance="legacy" class="w-100">
+            <mat-label *ngIf="!loadingBackup">User</mat-label>
+            <input matInput formControlName="user" *ngIf="!loadingBackup" required>
+          </mat-form-field>
+          <mat-form-field appearance="legacy" class="w-100">
+            <mat-label *ngIf="!loadingBackup">Your IP Address</mat-label>
+            <input matInput formControlName="dynamicHost" *ngIf="!loadingBackup" required>
+          </mat-form-field>
+          <mat-form-field appearance="legacy" class="w-100">
+            <mat-label *ngIf="!loadingBackup">Select Project</mat-label>
+            <mat-select formControlName="project_id" *ngIf="!loadingBackup" required>
+              <mat-option *ngFor="let project of projects" [value]="project.project_id">{{ project.project_name }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="backupForm.controls['project_id'].invalid && backupForm.controls['project_id'].touched">Please select a project</mat-error>
+          </mat-form-field>          
+          <div class="modal-buttons">
+            <h4 *ngIf="loadingBackup" class="progress-label" style="padding-left: 16%;">Backup creation in progress</h4>
+            <div *ngIf="loadingBackup">
+              <mat-progress-bar mode="query" diameter="55"></mat-progress-bar>
+            </div>
+            <button *ngIf="!loadingBackup" mat-raised-button class="btn btn-info" type="submit" class="me-8 mb-8" color="primary" [disabled]="!backupForm.valid || backupForm.controls['project_id'].value === 0">Create</button>
+            <button *ngIf="!loadingBackup" mat-raised-button type="button" (click)="closeDialog()" color="secondary">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </ng-template>
+
+ <!-- Create Backup for all Modal -->
+ <ng-template #createBackupForAllModal let-dialogRef="dialogRef">
+  <h2 mat-dialog-title style="padding-left: 18%;">Create Backup</h2>
+  <div mat-dialog-content>
+    <!-- Backup Form -->
+    <form [formGroup]="ansibleCreateBackupForm" (ngSubmit)="createBackupsForAll()">
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Backup Name</mat-label>
+        <input matInput formControlName="back_name" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Your Context Name</mat-label>
+        <input matInput formControlName="context_name" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">User</mat-label>
+        <input matInput formControlName="user" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Your IP Address</mat-label>
+        <input matInput formControlName="dynamicHost" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Select Project</mat-label>
+        <mat-select formControlName="project_id" *ngIf="!loadingBackup" required>
+          <mat-option *ngFor="let project of projects" [value]="project.project_id">{{ project.project_name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="modal-buttons">
+        <h4 *ngIf="loadingBackup" class="progress-label" style="padding-left: 16%;">Backup creation in progress</h4>
+        <div *ngIf="loadingBackup">
+          <mat-progress-bar mode="query" diameter="55"></mat-progress-bar>
+        </div>
+        <button *ngIf="!loadingBackup" mat-raised-button class="btn btn-info" type="submit" class="me-8 mb-8" color="primary" [disabled]="!ansibleCreateBackupForm.valid || ansibleCreateBackupForm.controls['project_id'].value === 0">Create</button>
+        <button *ngIf="!loadingBackup" mat-raised-button type="button" (click)="closeDialog()" color="secondary">Cancel</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+<!-- Create Backup for Deploy -->
+<ng-template #createBackupForDeployModal let-dialogRef="dialogRef">
+  <h2 mat-dialog-title style="padding-left: 18%;">Create Backup</h2>
+  <div mat-dialog-content>
+    <!-- Backup Form -->
+    <form [formGroup]="deployForm" (ngSubmit)="createBackupsForDeploy()">
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Backup Name</mat-label>
+        <input matInput formControlName="back_name" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Your Context Name</mat-label>
+        <input matInput formControlName="context_name" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">User</mat-label>
+        <input matInput formControlName="user" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Your IP Address</mat-label>
+        <input matInput formControlName="dynamicHost" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Select Project</mat-label>
+        <mat-select formControlName="project_id" *ngIf="!loadingBackup" required>
+          <mat-option *ngFor="let project of projects" [value]="project.project_id">{{ project.project_name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="modal-buttons">
+        <h4 *ngIf="loadingBackup" class="progress-label" style="padding-left: 16%;">Backup creation in progress</h4>
+        <div *ngIf="loadingBackup">
+          <mat-progress-bar mode="query" diameter="55"></mat-progress-bar>
+        </div>
+        <button *ngIf="!loadingBackup" mat-raised-button class="btn btn-info" type="submit" class="me-8 mb-8" color="primary" [disabled]="!deployForm.valid || deployForm.controls['project_id'].value === 0">Create</button>
+        <button *ngIf="!loadingBackup" mat-raised-button type="button" (click)="closeDialog()" color="secondary">Cancel</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+<!-- Create Backup for all PVC and PVC -->
+<ng-template #createBackupForPvPvcModal let-dialogRef="dialogRef">
+  <h2 mat-dialog-title style="padding-left: 18%;">Create Backup</h2>
+  <div mat-dialog-content>
+    <!-- Backup Form -->
+    <form [formGroup]="pvcForm" (ngSubmit)="createBackupsForPvPvc()">
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Backup Name</mat-label>
+        <input matInput formControlName="back_name" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Your Context Name</mat-label>
+        <input matInput formControlName="context_name" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">User</mat-label>
+        <input matInput formControlName="user" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Your IP Address</mat-label>
+        <input matInput formControlName="dynamicHost" *ngIf="!loadingBackup" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label *ngIf="!loadingBackup">Select Project</mat-label>
+        <mat-select formControlName="project_id" *ngIf="!loadingBackup" required>
+          <mat-option *ngFor="let project of projects" [value]="project.project_id">{{ project.project_name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div class="modal-buttons">
+        <h4 *ngIf="loadingBackup" class="progress-label" style="padding-left: 16%;">Backup creation in progress</h4>
+        <div *ngIf="loadingBackup">
+          <mat-progress-bar mode="query" diameter="55"></mat-progress-bar>
+        </div>
+        <button *ngIf="!loadingBackup" mat-raised-button class="btn btn-info" type="submit" class="me-8 mb-8" color="primary" [disabled]="!pvcForm.valid || pvcForm.controls['project_id'].value === 0">Create</button>
+        <button *ngIf="!loadingBackup" mat-raised-button type="button" (click)="closeDialog()" color="secondary">Cancel</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+
+    <!-- Display Backups -->
+    <div *ngIf="backups.length === 0" class="alert alert-warning d-flex fs-14 align-items-center rounded mb-16" role="alert" style="margin-top: 30px">
+      No backups available
+    </div>
+
+    <mat-card class="w-100" div style="margin-top: 60px;">
+      <mat-card-content>
+        <h4 class="mb-56">Backup List</h4>
+        <table mat-table [dataSource]="backups" class="mat-elevation-z8 w-100">
+          <!-- Backup Image and Name Column -->
+          <ng-container matColumnDef="backup_info">
+            <th mat-header-cell *matHeaderCellDef style="font-size: large;">Backups</th>
+            <td mat-cell *matCellDef="let backup">
+              <div class="d-flex align-items-center">
+                <img src="assets/images/backup.png" alt="Backup" style="width: 50px; height: auto; margin-right: 10px;">
+                <span>{{ backup.back_name }}</span>
+              </div>
+            </td>
+          </ng-container>
+          <!-- Project Column -->
+          <ng-container matColumnDef="project">
+            <th mat-header-cell *matHeaderCellDef style="font-size: large;">Project</th>
+            <td mat-cell *matCellDef="let backup">
+              <span *ngIf="backup.project">{{ backup.project.project_name }}</span>
+              <span *ngIf="!backup.project">Unknown Project</span>
+            </td>
+          </ng-container>
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef style="font-size: large; padding-left: 70px;">Actions</th>
+            <td mat-cell *matCellDef="let backup">
+              <button mat-icon-button class="me-2" (click)="openMigrateBackupModal(backup)">
+                <img src="assets/images/migrate.png" alt="Migrate" style="width: 24px; height: auto;">&nbsp;&nbsp;
+                <span class="visually-hidden" style="margin-right: 45%; color: rgb(7, 179, 164); font-size: medium;">Migrate</span>
+              </button>
+              
+              <!-- Migrate Backup Modal -->
+              <ng-template #migrateBackupModal let-dialogRef="dialogRef">
+                <h2 mat-dialog-title style="padding-left: 15%;">Migrate Backup</h2>
+                <div mat-dialog-content>
+                  <!-- Migrate Form -->
+                  <form [formGroup]="migrateForm" (ngSubmit)="migrateBackup()">
+                    <mat-form-field appearance="legacy" class="w-100">
+                      <mat-label *ngIf="!loadingBackup">Dynamic Host</mat-label>
+                      <input matInput formControlName="dynamicHost" *ngIf="!loadingBackup" required>
+                    </mat-form-field>
+                    <mat-form-field appearance="legacy" class="w-100">
+                      <mat-label *ngIf="!loadingBackup">User</mat-label>
+                      <input matInput formControlName="user" *ngIf="!loadingBackup" required>
+                    </mat-form-field>
+                    <mat-form-field appearance="legacy" class="w-100">
+                      <mat-label *ngIf="!loadingBackup">Your Destination</mat-label>
+                      <input matInput formControlName="context_name" *ngIf="!loadingBackup" required>
+                    </mat-form-field>
+                    <div class="modal-buttons">
+                      <h4 *ngIf="loadingBackup" class="progress-label" style="padding-left: 22%;">Migration in progress</h4>
+                      <div *ngIf="loadingBackup">
+                        <mat-progress-bar mode="query" diameter="55"></mat-progress-bar>
+                      </div>
+                      <button *ngIf="!loadingBackup" mat-raised-button class="btn btn-info" type="submit" class="me-8 mb-8" color="primary" [disabled]="loadingBackup">Migrate</button>
+                      <button *ngIf="!loadingBackup" mat-raised-button type="button" (click)="closeDialog()" color="secondary">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </ng-template>
+              
+              <button mat-icon-button color="warn" (click)="openDeleteBackupModal(backup)" style="margin-left: 15%;">
+                <mat-icon>delete</mat-icon>
+                <span class="visually-hidden" style="font-size: medium;">Delete</span>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['backup_info', 'project', 'actions']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['backup_info', 'project', 'actions'];"></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Delete Backup Modal -->
+    <ng-template #deleteBackupModal let-dialogRef="dialogRef">
+      <h2 mat-dialog-title style="padding-left: 15%;">Delete Backup</h2>
+      <div mat-dialog-content>
+        <!-- Delete Form -->
+        <form [formGroup]="deleteForm" (ngSubmit)="deleteBackups()">
+          <mat-form-field appearance="legacy" class="w-100">
+            <mat-label *ngIf="!loadingBackup">Dynamic Host</mat-label>
+            <input matInput formControlName="dynamicHost" *ngIf="!loadingBackup" required>
+          </mat-form-field>
+          <mat-form-field appearance="legacy" class="w-100">
+            <mat-label *ngIf="!loadingBackup">User</mat-label>
+            <input matInput formControlName="user" *ngIf="!loadingBackup" required>
+          </mat-form-field>
+          <mat-form-field appearance="legacy" class="w-100">
+            <mat-label *ngIf="!loadingBackup">Context Name</mat-label>
+            <input matInput formControlName="context_name" *ngIf="!loadingBackup" required>
+          </mat-form-field>
+          <div class="modal-buttons">
+            <h4 *ngIf="loadingBackup" class="progress-label" style="padding-left: 22%;">Deletion in progress</h4>
+            <div *ngIf="loadingBackup">
+              <mat-progress-bar mode="query" diameter="55" color="warn"></mat-progress-bar>
+            </div>
+            <button *ngIf="!loadingBackup" mat-raised-button class="btn btn-info" type="submit" class="me-8 mb-8" color="warn" [disabled]="loadingBackup || deleteForm.invalid">Delete</button>
+            <button *ngIf="!loadingBackup" mat-raised-button type="button" (click)="closeDialog()" color="secondary">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </ng-template>
+    
+  </div>
+</body>
+</html>

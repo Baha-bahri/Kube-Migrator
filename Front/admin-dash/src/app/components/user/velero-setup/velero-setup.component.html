@@ -1,0 +1,19 @@
+<mat-card>
+  <mat-card-content>
+    <h4 class="mb-32">SSH Key Setup</h4>
+    <form [formGroup]="veleroForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>User</mat-label>
+        <input matInput formControlName="user" required>
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>Your SSH Key</mat-label>
+        <textarea matInput formControlName="ssh_key" rows="10" required></textarea>
+      </mat-form-field>      
+      <div class="modal-buttons">
+        <button *ngIf="!loading" mat-raised-button color="primary" type="submit" [disabled]="veleroForm.invalid || loading">Send</button>
+        <mat-spinner *ngIf="loading" class="spinner" diameter="50" strokeWidth="4"></mat-spinner>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

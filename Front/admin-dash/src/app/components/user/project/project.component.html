@@ -1,0 +1,109 @@
+<!-- main HTML page -->
+<div class="container">
+  <mat-card class="w-100">
+    <mat-card-content>
+      <h4 class="mb-56">Project List</h4>
+      <div style="display: flex; justify-content: flex-end;">
+        <button mat-fab color="primary" class="mb-16" (click)="openProjectSetupModal()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <!-- List Projects -->
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let project of projects" class="mb-16">
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ project.project_name }}</mat-panel-title>
+            <button mat-icon-button [matMenuTriggerFor]="projectMenu" class="option-button" (click)="$event.stopPropagation()">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          </mat-expansion-panel-header>
+          <mat-menu #projectMenu="matMenu">
+            <button mat-menu-item *ngIf="project.project_id" (click)="deleteProject(project.project_id)">Delete</button>
+            <button mat-menu-item (click)="openUpdateProjectModal(project)">Update</button>
+          </mat-menu>
+          <mat-card>
+            <mat-card-content>
+              <mat-form-field appearance="legacy" class="w-100">
+                <mat-label>Project Name</mat-label>
+                <input matInput [value]="project.project_name" disabled>
+              </mat-form-field>
+              <mat-form-field appearance="legacy" class="w-100">
+                <mat-label>{{ project.credential.cred_name }}</mat-label>
+                <mat-select [value]="project.credential.id_credential" disabled>
+                  <mat-option *ngFor="let credential of credentials" [value]="credential.id_cred">
+                    {{ credential.cred_name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="legacy" class="w-100">
+                <mat-label>Velero Version</mat-label>
+                <mat-select [value]="project.velero.velero_version" disabled>
+                  <mat-option *ngFor="let velero of veleros" [value]="velero.velero_version">
+                    {{ velero.velero_version }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </mat-card-content>
+          </mat-card>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Project Setup Modal -->
+  <ng-template #projectSetupModal let-dialogRef="dialogRef">
+    <mat-dialog-content>
+      <h4 class="mb-32">Project Setup</h4>
+      <form [formGroup]="projectForm" (ngSubmit)="createProject()">
+        <mat-form-field appearance="legacy" class="w-100">
+          <mat-label>Project Name</mat-label>
+          <input matInput formControlName="project_name">
+        </mat-form-field>
+        <mat-form-field appearance="legacy" class="w-100">
+          <mat-label>Credential</mat-label>
+          <mat-select formControlName="id_credential">
+            <mat-option *ngFor="let credential of credentials" [value]="credential.id_cred">
+              {{ credential.cred_name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="legacy" class="w-100">
+          <mat-label>Velero Version</mat-label>
+          <mat-select formControlName="velero_version">
+            <mat-option *ngFor="let velero of veleros" [value]="velero.velero_version">
+              {{ velero.velero_version }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="modal-buttons">
+          <button mat-stroked-button color="primary" type="submit" [disabled]="projectForm.invalid">Create</button>
+          <button mat-button type="button" (click)="closeDialog()">Cancel</button>
+        </div>
+      </form>
+    </mat-dialog-content>
+  </ng-template>
+
+  <!-- Update Project Modal -->
+  <ng-template #updateProjectModal let-dialogRef="dialogRef">
+    <mat-dialog-content>
+      <h4 class="mb-32">Update Project Name</h4>
+      <form [formGroup]="updateProjectForm" (ngSubmit)="updateProject()">
+        <mat-form-field appearance="legacy" class="w-100">
+          <mat-label>New Project Name</mat-label>
+          <input matInput formControlName="new_project_name">
+        </mat-form-field>
+        <div class="modal-buttons">
+          <button mat-stroked-button color="primary" type="submit" [disabled]="updateProjectForm.invalid">Update</button>
+          <button mat-button (click)="closeDialog()">Cancel</button>
+        </div>
+      </form>
+    </mat-dialog-content>
+  </ng-template>
+</div>
+
+<!-- Add custom styles to place the option button to the right -->
+<style>
+  .option-button {
+    margin-left: auto;
+  }
+</style>

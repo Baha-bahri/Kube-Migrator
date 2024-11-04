@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  mysqldb:
+    image: mysql:latest
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: mypass1234
+      MYSQL_DATABASE: kubemigrator
+    ports:
+      - "3307:3306"
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - mynetwork
+
+  backend:
+    image: baha00/kube-migrator:backend-latest
+    depends_on:
+      - mysqldb
+    restart: on-failure
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/kubemigrator?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: mypass1234
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_APPLICATION_NAME: Kube-Migrator
+      SERVER_PORT: 8090
+    networks:
+      - mynetwork
+
+  frontend:
+    image: baha00/kube-migrator:frontend-latest
+    restart: on-failure
+    ports:
+      - "8080:80"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  db:

@@ -1,0 +1,66 @@
+<div class="dashboard-container">
+  <div class="background-image">
+  <div class="dashboard-container">
+    <!-- Your existing dashboard content here -->
+    <h2 class="welcome-message" >Admin Dashboard</h2>
+    <!-- Other dashboard elements -->
+  </div>
+</div>
+  <div fxLayout="row wrap" fxLayoutGap="30px grid" class="stats-container">
+    <div fxFlex.md="33%" fxFlex.lg="33%" fxFlex.xl="33%" fxFlex.sm="100%">
+      <mat-card class="stat-card">
+        <mat-card-title>
+          <img src="assets/images/users.png"  style="width: 80px; height: auto;" class="stat-icon" alt="User Icon"/>
+          <span>Total Users</span>
+        </mat-card-title>
+        <mat-card-content>
+          <p class="stat-number">{{ totalUsers }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div fxFlex.md="33%" fxFlex.lg="33%" fxFlex.xl="33%" fxFlex.sm="100%">
+      <mat-card class="stat-card">
+        <mat-card-title>
+          <img src="assets/images/backup.png" style="width: 80px; height: auto;" class="stat-icon" alt="Backup Icon"/>
+          <span>Total Backups</span>
+        </mat-card-title>
+        <mat-card-content>
+          <p class="stat-number">{{ totalBackups }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div fxFlex.md="33%" fxFlex.lg="33%" fxFlex.xl="33%" fxFlex.sm="100%">
+      <mat-card class="stat-card">
+        <mat-card-title>
+          <img src="assets/images/velero.png"  style="width: 80px; height: auto;" class="stat-icon" alt="Key Icon"/>
+          <span>All Available Velero</span>
+        </mat-card-title>
+        <mat-card-content>
+          <p class="stat-number">{{ totalVeleros }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div fxFlex.md="33%" fxFlex.lg="33%" fxFlex.xl="33%" fxFlex.sm="100%">
+      <mat-card class="stat-card">
+        <mat-card-title>
+          <img src="assets/images/key.png"  style="width: 80px; height: auto;" class="stat-icon" alt="Credentials Icon"/>
+          <span>Total Credentials</span>
+        </mat-card-title>
+        <mat-card-content>
+          <p class="stat-number">{{ totalCredentials }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div fxFlex.md="33%" fxFlex.lg="33%" fxFlex.xl="33%" fxFlex.sm="100%">
+      <mat-card class="stat-card">
+        <mat-card-title>
+          <img src="assets/images/project.png"  style="width: 80px; height: auto;" class="stat-icon" alt="Projects Icon"/>
+          <span>Total Projects</span>
+        </mat-card-title>
+        <mat-card-content>
+          <p class="stat-number">{{ totalProjects }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

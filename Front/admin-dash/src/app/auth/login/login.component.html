@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("assets/images/background.jpg");
+            background-size: cover;
+            background-color: #2679a7;
+            
+        }
+        
+        /* Center the form */
+        .container {
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        
+        .logo {
+            margin-bottom: 20px;
+        }
+        
+        form {
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo" style="margin-right: 25px;">
+            <img src="assets/images/favicon.png" alt="" style="width: 200px; height: auto;">
+        </div>
+        
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-32">Login</h4>
+                <form (ngSubmit)="login({ username: username.value, password: password.value })">
+                    <!-- Username -->
+                    <mat-form-field class="w-100 fs-16" appearance="outline">
+                      <mat-label>Username</mat-label>
+                      <input matInput type="text" #username name="username" placeholder="Enter your username">
+                    </mat-form-field>
+                  
+                    <!-- Password -->
+                    <mat-form-field class="w-100 fs-16" appearance="outline">
+                      <mat-label>Password</mat-label>
+                      <input matInput type="password" #password name="password" placeholder="Enter your password">
+                    </mat-form-field>
+                  
+                    <!-- Forgot Password Link -->
+                    <a href="/reset-password" class="d-block mb-16">Forgot Password?</a>
+                  
+                    <!-- Submit Button -->
+                    <button mat-button class="btn btn-info fw-normal" type="submit">Sign In</button>
+                  </form>
+                  
+                
+                <!-- Don't have an account? Sign up now -->
+                <button class="btn btn-link mb-16" type="submit"  (click)="goToSignup()">Don't have an account? Sign up now</button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Angular Material -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<mat-card class="w-100">
+  <mat-card-content>
+    <h4 class="mb-56">Velero Version List</h4>
+    <div style="display: flex; justify-content: flex-end;">
+      <button mat-fab color="primary" class="mb-16" (click)="openVeleroSetupModal()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
+    <table mat-table [dataSource]="veleros" class="mat-elevation-z8 w-100">
+      <ng-container matColumnDef="velero_version">
+        <th mat-header-cell *matHeaderCellDef style="font-size: larger;">Velero Version </th>
+        <td mat-cell *matCellDef="let element"> {{element.velero_version}} </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef style="font-size: larger;"> Action </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="warn" (click)="deleteVelero(element.velero_version)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['velero_version', 'actions']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['velero_version', 'actions'];"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #veleroSetupModal let-dialogRef="dialogRef">
+  <mat-dialog-content>
+    <h4 class="mb-32">Velero Setup</h4>
+    <form [formGroup]="veleroForm" (ngSubmit)="createVelero()">
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>Velero Version</mat-label>
+        <input matInput formControlName="velero_version">
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>Velero Binary</mat-label>
+        <input matInput formControlName="velero_bin">
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>Velero URL</mat-label>
+        <input matInput formControlName="velero_url">
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>Velero Package</mat-label>
+        <input matInput formControlName="velero_pkg">
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>Velero Package Binary</mat-label>
+        <input matInput formControlName="velero_pkg_bin">
+      </mat-form-field>
+      <mat-form-field appearance="legacy" class="w-100">
+        <mat-label>Velero Package Extension</mat-label>
+        <input matInput formControlName="velero_pkg_ext">
+      </mat-form-field>
+      <div class="modal-buttons">
+        <button mat-stroked-button color="primary" type="submit">Create</button>
+        <button mat-stroked-button color="secondary" type="button" (click)="closeDialog()">Cancel</button>
+      </div>
+    </form>
+  </mat-dialog-content>
+</ng-template>

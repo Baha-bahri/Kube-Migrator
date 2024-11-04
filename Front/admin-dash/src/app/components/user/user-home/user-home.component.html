@@ -1,0 +1,58 @@
+<div class="user-home-container">
+  <h2 class="welcome-message">Welcome, {{ username }}!</h2>
+  <div fxLayout="row wrap" fxLayoutGap="30px grid" class="stats-container">
+    <div fxFlex.md="33%" fxFlex.lg="33%" fxFlex.xl="33%" fxFlex.sm="100%">
+      <mat-card class="stat-card">
+        <mat-card-title>
+          <img src="assets/images/backup.png"  style="width: 100px; height: auto;"  class="stat-icon" alt="Backup Icon"/>
+          <span>Total Backups</span>
+        </mat-card-title>
+        <mat-card-content>
+          <p class="stat-number">{{ totalBackups }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div fxFlex.md="33%" fxFlex.lg="33%" fxFlex.xl="33%" fxFlex.sm="100%">
+      <mat-card class="stat-card">
+        <mat-card-title>
+          <img src="assets/images/project.png"  style="width: 100px; height: auto;"  class="stat-icon" alt="Folder Icon"/>
+          <span>Total Projects</span>
+        </mat-card-title>
+        <mat-card-content>
+          <p class="stat-number">{{ totalProjects }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div fxFlex.md="33%" fxFlex.lg="33%" fxFlex.xl="33%" fxFlex.sm="100%">
+      <mat-card class="stat-card">
+        <mat-card-title>
+          <img src="assets/images/key.png"  style="width: 100px; height: auto;"  class="stat-icon" alt="Key Icon"/>
+          <span>Total Credentials</span>
+        </mat-card-title>
+        <mat-card-content>
+          <p class="stat-number">{{ totalCredentials }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <div class="user-guide">
+    <mat-card class="stat-card">
+      <mat-card-title>
+        <img src="assets/images/help_outline.png" style="width: 100px; height: auto;" class="stat-icon" alt="Help Icon"/>
+      </mat-card-title>
+      <mat-card-content>
+        <ul class="user-guide-list">
+          <li>Firstly, put your SSH key in your SSH key page.</li>
+          <li>create a project and select one credential and one Velero version to download.</li>
+          <li>Once the project is created and necessary resources are selected, you can proceed to create a backup by selecting a project.</li>
+          <li>Credential support for storage account on Azure</li>
+          <li>Ensure that the credentials you created are valid.</li>
+          <li>For every action, you need to provide your machine's username and IP address, and make sure they are correct.</li>
+          <li>Ensure to add your cluster on kube config context in your machine.</li>
+          <li>You need a Linux machine to progress in the functionality; Windows is not supported.</li>
+        </ul>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
