@@ -111,6 +111,7 @@
                 </configuration>
             </plugin>
         </plugins>
+	<finalName>kube_migrator</finalName>
     </build>
 
 </project>
